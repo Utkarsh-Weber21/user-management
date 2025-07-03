@@ -1,5 +1,4 @@
-package com.example.userManagementAPI.model;                    
-
+package com.example.userManagementAPI.model;
 
 import java.time.LocalDateTime;
 
@@ -36,6 +35,7 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    
 
     public User(){}
 
