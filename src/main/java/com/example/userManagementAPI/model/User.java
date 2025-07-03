@@ -1,6 +1,11 @@
 package com.example.userManagementAPI.model;                    
 
 
+import java.time.LocalDateTime;
+
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -22,6 +27,15 @@ public class User {
     @NotBlank(message = "Email is required")
     @Email(message = "Email should be valid")
     private String email;
+
+    @Column(name = "create_at",updatable = false)
+    @CreationTimestamp 
+    private LocalDateTime createdAt;
+
+    @Column(name = "update_at")
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
+
 
     public User(){}
     public User(Long id,String name,String email){
@@ -50,4 +64,22 @@ public class User {
     public void setEmail(String email){
         this.email=email;
     }
+
+    public void setCreatedAt(LocalDateTime createdAt){
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCreatedAt(){
+        return createdAt;
+    }
+
+    public void setUpdatedAt(LocalDateTime updatedAt){
+        this.updatedAt = updatedAt;
+    }
+
+    public LocalDateTime getUpdatedAt(){
+        return updatedAt;
+    }
+
+
 }
