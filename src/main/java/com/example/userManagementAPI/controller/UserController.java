@@ -19,8 +19,8 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody User user){
-        User savedUser = userRepository.save(user);
+    public ResponseEntity<List<User>> createUser(@Valid @RequestBody List<User> useres){
+        List<User> savedUser = userRepository.saveAll(useres);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
