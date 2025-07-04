@@ -35,9 +35,12 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    
 
     public User(){}
+    public User(String name,String email){
+        this.name=name;
+        this.email=email;
+    }
 
     public User(Long id,String name,String email){
         this.id=id;
