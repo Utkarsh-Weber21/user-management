@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.web.bind.annotation.GetMapping;
 
-
+@CrossOrigin(origins = {"http://localhost:8080", "http://127.0.0.1:5500"})
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -47,6 +47,18 @@ public class UserController {
             return ResponseEntity.ok(updatedUser);
         }).orElse(ResponseEntity.notFound().build());
     }
+
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id);
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
+    }
+
 
     @GetMapping("/page")
     public org.springframework.data.domain.Page<User> getUsers(Pageable pageable) {

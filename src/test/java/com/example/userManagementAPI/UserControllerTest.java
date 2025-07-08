@@ -19,8 +19,9 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
@@ -64,27 +65,36 @@ public class UserControllerTest{
     }
 
     @Test
-    void testCreateUsers()throws Exception{
+    void testCreateUsers()throws Exception {
         //---ARRANGE---
-        User newUser1=new User("utkarsh","utkarsh@gmail.com");
-        User newUser2=new User("Khushi","khushi@gmail.com");
-        List<User> newUsers=Arrays.asList(newUser1,newUser2);
+        User newUser1 = new User("utkarsh", "utkarsh@gmail.com");
+        User newUser2 = new User("Khushi", "khushi@gmail.com");
+        List<User> newUsers = Arrays.asList(newUser1, newUser2);
 
         //---ACT---
         mockMvc.perform(post("/api/users").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(newUsers)))
                 //---ASSERT---
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$",hasSize(2)))
-                .andExpect(jsonPath("$[0].id",notNullValue()))
-                .andExpect(jsonPath("$[0].name",is("utkarsh")))
-                .andExpect(jsonPath("$[0].email",is("utkarsh@gmail.com")))
-                .andExpect(jsonPath("$[1].id",notNullValue()))
-                .andExpect(jsonPath("$[1].name",is("Khushi")))
-                .andExpect(jsonPath("$[1].email",is("khushi@gmail.com")));
-
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].id", notNullValue()))
+                .andExpect(jsonPath("$[0].name", is("utkarsh")))
+                .andExpect(jsonPath("$[0].email", is("utkarsh@gmail.com")))
+                .andExpect(jsonPath("$[1].id", notNullValue()))
+                .andExpect(jsonPath("$[1].name", is("Khushi")))
+                .andExpect(jsonPath("$[1].email", is("khushi@gmail.com")));
     }
 
+    @Test
+    void testDeleteUserFound() throws Exception{
+        mockMvc.perform(delete("/api/users/{id}",user1.getId())).andExpect(status().isNoContent());
+        assertFalse(userRepository.existsById(user2.getId()));
+        assertEquals(initialUserCount-2,userRepository.count());
+    }
 
-
-
+    @Test
+    void testDeleteUserNotFound() throws Exception{
+        Long nonExistedId = user1.getId()+1001;
+        mockMvc.perform(delete("/api/users/{id}",nonExistedId)).andExpect(status().isNotFound());
+        assertEquals(initialUserCount,userRepository.count());
+    }
 }
