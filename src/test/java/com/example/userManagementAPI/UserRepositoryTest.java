@@ -23,6 +23,7 @@ public class UserRepositoryTest {
     private TestEntityManager entityManager;
     private User user1;
     private User user2;
+    private User user3;
 
     @BeforeEach
     void setUp() {
@@ -50,7 +51,40 @@ public class UserRepositoryTest {
     @Test
     void testFindByEmailIdNotFound(){
         Optional<User> notFoundUser = userRepository.findByEmail("abc@gmail.com");
-
         assertThat(notFoundUser).isNotPresent();
+    }
+
+    @Test
+    void testSaveUser(){
+        User newUser = new User("Jack Kumar","jackkumar@gmail.com");
+
+        User savedUser = userRepository.save(newUser);
+        assertThat(savedUser).isNotNull();
+        assertThat(newUser.getName()).isEqualTo("Jack Kumar");
+        assertThat(newUser.getEmail()).isEqualTo("jackkumar@gmail.com");
+    }
+
+    @Test
+    void testUpdateUser() throws Exception{
+
+        String newName = "jack raj";
+        String newEmail = "jackj@gmail.com";
+
+        user3 = new User("Marsh","marsh@gmail.com");
+
+        user3.setName(newName);
+        user3.setEmail(newEmail);
+
+        User updatedUser3 = userRepository.save(user3);
+        assertThat(updatedUser3.getId()).isNotNull();
+        assertThat(updatedUser3.getName()).isEqualTo(newName);
+        assertThat(updatedUser3.getEmail()).isEqualTo(newEmail);
+    }
+
+    @Test
+    void deleteUser(){
+        userRepository.delete(user2);
+        Optional<User> users = userRepository.findById(user2.getId());
+        assertThat(users).isNotPresent();
     }
 }
